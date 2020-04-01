@@ -572,13 +572,21 @@ int dcc_parse_hosts(const char *where, const char *source_name,
 
         /* by default, mark the host up */
         curr->is_up = 1;
-
-        /* Store verbatim hostname */
+#ifdef __sgi
+	/* Store verbatim hostname */
+        if (!(curr->hostdef_string = strdup(token_start))) {
+            rs_log_crit("failed to allocate hostdef_string");
+            return EXIT_OUT_OF_MEMORY;
+        }
+#else
+	/* Store verbatim hostname */
         if (!(curr->hostdef_string = strndup(token_start, (size_t) token_len))) {
             rs_log_crit("failed to allocate hostdef_string");
             return EXIT_OUT_OF_MEMORY;
         }
+#endif
 
+      
         /* Link into list */
         if (*ret_prev) {
             (*ret_prev)->next = curr;
