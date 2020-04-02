@@ -92,8 +92,10 @@ int dcc_talk_to_include_server(char **argv, char ***files)
 
     strcpy(sa.sun_path, include_server_port);
     sa.sun_family = AF_UNIX;
+    struct sockaddr sa_reg;
+    memcpy(&sa_reg, &sa, sizeof(struct sockaddr));
 
-    if (dcc_connect_by_addr((struct sockaddr *) &sa, sizeof(sa), &fd))
+    if (dcc_connect_by_addr(&sa_reg, sizeof(sa_reg), &fd))
         return 1;
 
     /* TODO? switch include_server to use more appropriate token names */
